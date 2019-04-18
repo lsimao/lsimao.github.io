@@ -1,19 +1,34 @@
 <html>
 <body>
 <div id="result">Waiting...</div>
+<div id="history">timestamp, latitude, longitude, altitude, accuracy, altitudeAccuracy, heading, speed</div>
 <script>
-var x = document.getElementById("result");
-function getLocation() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(showPosition);
-  } else {
-    x.innerHTML = "Geolocation is not supported by this browser.";
-  }
+var res = document.getElementById("result");
+var hist = document.getElementById("history");
+var last;
+if (navigator.geolocation) {
+ navigator.geolocation.getCurrentPosition(showPosition);
+ navigator.geolocation.watchPosition(showPosition);
+} else {
+ res.innerHTML = "Geolocation is not supported by this browser.";
 }
-
-function showPosition(position) {
-  x.innerHTML = "Latitude: " + position.coords.latitude + 
-  "<br>Longitude: " + position.coords.longitude; 
+function t(v) {return v.toString()}
+function showPosition(pos) {
+ res.textContent = pos.coords.latitude+pos.coords.longitude+(pos.coords.altitude?", "+pos.coords.altitude:"");
+ if(pos.coords.latitude!=last.coords.latitude ||
+    pos.coords.longitude!=last.coords.longitude ||
+    pos.coords.altitude!=last.coords.altitude) {
+  last=pos;
+  hist.innerText+="\n"
+   +pos.timestamp+", "
+   +pos.coords.latitude+", "
+   +pos.coords.longitude+", "
+   +pos.coords.altitude+", "
+   +pos.coords.accuracy+", "
+   +pos.coords.altitudeAccuracy+", "
+   +pos.coords.heading+", "
+   +pos.coords.speed;
+ }
 }
 </script>
 </body>
