@@ -8,7 +8,7 @@ var hist = document.getElementById("history");
 var last;
 if (navigator.geolocation) {
  navigator.geolocation.getCurrentPosition(showPosition);
- navigator.geolocation.watchPosition(showPosition);
+ navigator.geolocation.watchPosition(showPosition,null,{enableHighAccuracy:true});
 } else {
  res.innerHTML = "Geolocation is not supported by this browser.";
 }
