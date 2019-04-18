@@ -15,7 +15,8 @@ if (navigator.geolocation) {
 function t(v) {return v.toString()}
 function showPosition(pos) {
  res.textContent = pos.coords.latitude+pos.coords.longitude+(pos.coords.altitude?", "+pos.coords.altitude:"");
- if(pos.coords.latitude!=last.coords.latitude ||
+ if(!last ||
+    pos.coords.latitude!=last.coords.latitude ||
     pos.coords.longitude!=last.coords.longitude ||
     pos.coords.altitude!=last.coords.altitude) {
   last=pos;
