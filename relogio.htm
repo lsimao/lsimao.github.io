@@ -1,9 +1,13 @@
 <html>
 <script src="https://richtr.github.io/NoSleep.js/dist/NoSleep.min.js"></script>
+<body style="background-color: black; color: white" onclick="togFS()">
+<div id="time" style="font-family:Lucida Console, Monaco, monospace; position: absolute; top: 50%; left: 50%; transform: translateY(-50%) translateX(-50%);">
+	<span id="hhmm"></span><span id="ss" style="font-size: 50%"></span>
+</div>
+</body>
 <script>
 	var noSleep=new NoSleep;
 	noSleep.enable();
-
 	setInterval(function() {
 		var d2=n=>(n<10?"0":"")+n;
 		var d=new Date;
@@ -11,10 +15,14 @@
 		ss.textContent=":"+d2(d.getSeconds());
 		time.style.fontSize=((a,b)=>a<b?a:b)(document.body.clientWidth*.24,document.body.clientHeight-20);
 	},100);
+	
+	var isFS=false;
+	function togFS() {
+		if (isFS) {
+			document.webkitCancelFullScreen();
+		}else{
+			document.documentElement.webkitRequestFullscreen();
+		}
+		isFS=!isFS;
+	}
 </script>
-<body style="background-color: black; color: white">
-<div id="time" style="font-family:Lucida Console, Monaco, monospace; position: absolute; top: 50%; left: 50%; transform: translateY(-50%) translateX(-50%);">
-	<span id="hhmm"></span><span id="ss" style="font-size: 50%"></span>
-</div>
-</body>
-</html>
