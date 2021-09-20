@@ -1,0 +1,35 @@
+<html>
+<script src="https://richtr.github.io/NoSleep.js/dist/NoSleep.js"></script>
+<body style="background-color: black; color: white" onclick="togFS()">
+<input id="btnEnNoSl" type="buton" onclick="enNoSl()" value="Manter"></input>
+<div id="time" style="font-family:Lucida Console, Monaco, monospace; position: absolute; top: 50%; left: 50%; transform: translateY(-50%) translateX(-50%);">
+	<span id="hhmm"></span><span id="ss" style="font-size: 50%"></span>
+</div>
+</body>
+<script>
+	
+	setInterval(function() {
+		var d2=n=>(n<10?"0":"")+n;
+		var d=new Date;
+		hhmm.textContent=d2(d.getHours())+":"+d2(d.getMinutes());
+		ss.textContent=":"+d2(d.getSeconds());
+		time.style.fontSize=((a,b)=>a<b?a:b)(document.body.clientWidth*.24,document.body.clientHeight-20);
+	},100);
+	
+	var isFS=false;
+	function togFS() {
+		noSleep.enable();
+		if (isFS) {
+			document.webkitCancelFullScreen();
+		}else{
+			document.documentElement.webkitRequestFullscreen();
+		}
+		isFS=!isFS;
+	}
+	
+	var noSleep=new NoSleep;
+	function enNoSl() {
+		noSleep.enable();
+		btnEnNoSl.style.visibility="hidden";
+	}
+</script>
