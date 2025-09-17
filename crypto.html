@@ -21,8 +21,12 @@
       <input type="password" id="password" required>
     </label>
     <label>
-      Plaintext (for encode) / Base64 Data (for decode):
-      <textarea id="data" required></textarea>
+      Plaintext:
+      <textarea id="plaintext"></textarea>
+    </label>
+    <label>
+      Base64 Data:
+      <textarea id="data"></textarea>
     </label>
     <div class="btn-group">
       <button type="button" id="encode-btn">Encode</button>
@@ -79,13 +83,19 @@
       const password = document.getElementById('password').value;
       const b64data = document.getElementById('data').value.trim();
       let output = document.getElementById('output');
+      if (!password || !b64data) {
+        output.innerHTML = `<span style="color:red;">Please enter both password and Base64 Data for decoding.</span>`;
+        return;
+      }
 
       try {
         const key = await sha256(password);
         const dataBytes = base64ToBytes(b64data);
         const decodedBytes = xorBytes(dataBytes, key);
         const decodedText = bytesToString(decodedBytes);
-        output.innerHTML = `<pre>${decodedText}</pre>`;
+        output.innerHTML = `<b>Decoded Plaintext:</b><pre>${decodedText}</pre>`;
+        // Optionally, copy to plaintext input
+        document.getElementById('plaintext').value = decodedText;
       } catch (err) {
         output.innerHTML = `<span style="color:red;">Error decoding data: ${err.message}</span>`;
       }
@@ -94,15 +104,21 @@
     document.getElementById('encode-btn').addEventListener('click', async function(e) {
       // Encode
       const password = document.getElementById('password').value;
-      const plaintext = document.getElementById('data').value;
+      const plaintext = document.getElementById('plaintext').value;
       let output = document.getElementById('output');
+      if (!password || !plaintext) {
+        output.innerHTML = `<span style="color:red;">Please enter both password and Plaintext for encoding.</span>`;
+        return;
+      }
 
       try {
         const key = await sha256(password);
         const plainBytes = stringToBytes(plaintext);
         const xored = xorBytes(plainBytes, key);
         const b64 = bytesToBase64(xored);
-        output.innerHTML = `<pre>${b64}</pre>`;
+        output.innerHTML = `<b>Encoded Base64:</b><pre>${b64}</pre>`;
+        // Optionally, copy to base64 input
+        document.getElementById('data').value = b64;
       } catch (err) {
         output.innerHTML = `<span style="color:red;">Error encoding data: ${err.message}</span>`;
       }
