@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Base64 Encode/Decode with Password (SHA)</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 2em; }
+    label { display: block; margin-top: 1em; }
+    textarea { width: 100%; height: 4em; }
+    input[type="password"], input[type="text"] { width: 100%; }
+    #output { margin-top: 2em; background: #f8f8f8; padding: 1em; border-radius: 5px; }
+    .btn-group { margin-top: 1em; }
+    button { margin-right: 1em; }
+  </style>
+</head>
+<body>
+  <h2>Base64 Encode/Decode with Password (SHA Key)</h2>
+  <form id="crypto-form">
+    <label>
+      Password:
+      <input type="password" id="password" required>
+    </label>
+    <label>
+      Plaintext (for encode) / Base64 Data (for decode):
+      <textarea id="data" required></textarea>
+    </label>
+    <div class="btn-group">
+      <button type="button" id="encode-btn">Encode</button>
+      <button type="submit" id="decode-btn">Decode</button>
+    </div>
+  </form>
+  <div id="output"></div>
+
+  <script>
+    async function sha256(str) {
+      const encoder = new TextEncoder();
+      const data = encoder.encode(str);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+      return new Uint8Array(hashBuffer);
+    }
+
+    function base64ToBytes(b64) {
+      const binaryStr = atob(b64);
+      const len = binaryStr.length;
+      const bytes = new Uint8Array(len);
+      for (let i = 0; i < len; ++i) {
+        bytes[i] = binaryStr.charCodeAt(i);
+      }
+      return bytes;
+    }
+
+    function bytesToBase64(bytes) {
+      let binary = '';
+      for (let i = 0; i < bytes.length; ++i) {
+        binary += String.fromCharCode(bytes[i]);
+      }
+      return btoa(binary);
+    }
+
+    function xorBytes(data, key) {
+      const out = new Uint8Array(data.length);
+      for (let i = 0; i < data.length; ++i) {
+        out[i] = data[i] ^ key[i % key.length];
+      }
+      return out;
+    }
+
+    function bytesToString(bytes) {
+      return new TextDecoder().decode(bytes);
+    }
+
+    function stringToBytes(str) {
+      return new TextEncoder().encode(str);
+    }
+
+    document.getElementById('crypto-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      // Decode
+      const password = document.getElementById('password').value;
+      const b64data = document.getElementById('data').value.trim();
+      let output = document.getElementById('output');
+
+      try {
+        const key = await sha256(password);
+        const dataBytes = base64ToBytes(b64data);
+        const decodedBytes = xorBytes(dataBytes, key);
+        const decodedText = bytesToString(decodedBytes);
+        output.innerHTML = `<pre>${decodedText}</pre>`;
+      } catch (err) {
+        output.innerHTML = `<span style="color:red;">Error decoding data: ${err.message}</span>`;
+      }
+    });
+
+    document.getElementById('encode-btn').addEventListener('click', async function(e) {
+      // Encode
+      const password = document.getElementById('password').value;
+      const plaintext = document.getElementById('data').value;
+      let output = document.getElementById('output');
+
+      try {
+        const key = await sha256(password);
+        const plainBytes = stringToBytes(plaintext);
+        const xored = xorBytes(plainBytes, key);
+        const b64 = bytesToBase64(xored);
+        output.innerHTML = `<pre>${b64}</pre>`;
+      } catch (err) {
+        output.innerHTML = `<span style="color:red;">Error encoding data: ${err.message}</span>`;
+      }
+    });
+  </script>
+</body>
+</html>
