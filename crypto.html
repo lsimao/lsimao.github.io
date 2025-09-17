@@ -115,7 +115,7 @@
         const plainBytes = stringToBytes(plaintext);
         const xored = xorBytes(plainBytes, key);
         const b64 = bytesToBase64(xored);
-        status.innerHTML = `<b>Encoded Base64</b><pre>${b64}</pre>`;
+        status.innerHTML = `<b>Encoded Base64</b>`;
         document.getElementById('data').value = b64;
       } catch (err) {
         status.innerHTML = `<span style="color:red;">Error encoding data: ${err.message}</span>`;
