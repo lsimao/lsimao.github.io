@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Exemplo: input → função → output</title>
+<style>
+body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; padding: 20px; }
+label { display:block; margin-top: 12px; font-weight:600 }
+input[type="text"] { width: 100%; padding: 8px; font-size: 16px; box-sizing: border-box }
+</style>
+</head>
+<body>
+<h3>Exemplo simples</h3>
+
+
+<label for="in1">Caixa de entrada (edita aqui)</label>
+<input id="in1" type="text" placeholder="Escreve algo...">
+
+
+<label for="in2">Resultado (actualizado automaticamente)</label>
+<input id="in2" type="text" readonly placeholder="Resultado aparece aqui">
+
+<script>
+
+function ReverteConsoantes(p) {
+  const z=(s=>s+s.toUpperCase())(Array.from({length:26},(_,i)=>String.fromCharCode(97+i)).filter(l=>!"aeiou".includes(l)).join('')+"ç");
+  var c=p.split('').filter(l=>z.includes(l));
+  return p.split('').map(l=>z.includes(l)?(l.toUpperCase()==l?c.pop().toUpperCase():c.pop().toLowerCase()):l).join('')
+}
+
+const in1 = document.getElementById('in1');
+const in2 = document.getElementById('in2');
+
+// Atualiza o segundo campo sempre que o primeiro for modificado
+in1.addEventListener('input', () => {
+in2.value = ReverteConsoantes(in1.value);
+
+</script>
+</body>
+</html>
