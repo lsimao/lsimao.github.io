@@ -26,7 +26,7 @@ input[type="text"] { width: 100%; padding: 8px; font-size: 16px; box-sizing: bor
 function ReverteConsoantes(p) {
   const z=(s=>s+s.toUpperCase())(Array.from({length:26},(_,i)=>String.fromCharCode(97+i)).filter(l=>!"aeiou".includes(l)).join('')+"ç");
   var c=p.split('').filter(l=>z.includes(l));
-  return p.split('').map(l=>z.includes(l)?(l.toUpperCase()==l?c.pop().toUpperCase():c.pop().toLowerCase()):l).join('')
+  return p.split('').map(l=>z.includes(l)?(l.toUpperCase()==l?c.pop().toUpperCase():c.pop().toLowerCase()):l).join('');
 }
 
 const in1 = document.getElementById('in1');
